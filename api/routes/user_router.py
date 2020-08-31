@@ -1,6 +1,5 @@
 from flask import Blueprint, request
-from app import *
-from api.models.user_model import User
+from api.models.user_model import User, db
 user_bp = Blueprint('user_bp', __name__)
 
 
@@ -11,17 +10,16 @@ def test():
 
 @user_bp.route('/register', methods=['POST'])
 def register():
-    first_name = request.args.get('first_name')
-    last_name = request.args.get('last_name')
-    email = request.args.get('email')
-    password = request.args.get('password')
+    data = request.get_json(silent=True)
+    first_name = data['first_name']
+    last_name = data['last_name']
+    email = data['email']
 
     try:
         user = User(
             first_name=first_name,
             last_name=last_name,
             email=email,
-            password=password
         )
         db.session.add(user)
         db.session.commit()

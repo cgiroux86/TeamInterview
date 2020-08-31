@@ -1,7 +1,6 @@
 import sys
 import os
 from flask_sqlalchemy import SQLAlchemy
-sys.path.append(f'{os.getcwd()}/app.py')
 db = SQLAlchemy()
 
 
