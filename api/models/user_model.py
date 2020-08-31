@@ -12,8 +12,8 @@ class User(db.Model):
     first_name = db.Column(db.String())
     last_name = db.Column(db.String())
     email = db.Column(db.String(), unique=True, nullable=False)
-    # password = db.Column(db.String(), nullable=False)
     username = db.Column(db.String(), nullable=True)
+    password = db.relationship('UserPasswords', backref='user', lazy=True)
 
     def __init__(self, first_name, last_name, email, username=None):
         self.first_name = first_name
