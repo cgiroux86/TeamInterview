@@ -1,7 +1,8 @@
 import sys
 import os
+from flask_sqlalchemy import SQLAlchemy
 sys.path.append(f'{os.getcwd()}/app.py')
-from app import db
+db = SQLAlchemy()
 
 
 class User(db.Model):
