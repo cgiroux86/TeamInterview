@@ -1,6 +1,7 @@
 import sys
 import os
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 db = SQLAlchemy()
 
 
@@ -43,7 +44,7 @@ class UserPasswords(db.Model):
 
     def __init__(self, user_id, digest):
         self.user_id = user_id
-        self.digest = digest
+        self.digest = Bcrypt().generate_password_hash(digest).decode()
 
     def __repr__(self):
         return f'user_id: {self.user_id}'

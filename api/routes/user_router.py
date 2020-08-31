@@ -1,5 +1,6 @@
 from flask import Blueprint, request
-from api.models.user_model import User, db
+from api.models.user_model import User, UserPasswords, db
+from flask_bcrypt import Bcrypt
 user_bp = Blueprint('user_bp', __name__)
 
 
@@ -14,6 +15,7 @@ def register():
     first_name = data['first_name']
     last_name = data['last_name']
     email = data['email']
+    digest = data['password']
 
     try:
         user = User(
@@ -23,6 +25,16 @@ def register():
         )
         db.session.add(user)
         db.session.commit()
-        return "User added. book id={}".format(user.id)
     except Exception as e:
         return(str(e))
+
+    try:
+        user_pw = UserPasswords(
+            user_id=user.id,
+            digest=digest
+        )
+        db.session.add(user_pw)
+        db.session.commit()
+        return f'User with id of {user.id}, has successfully saved password {user_pw.digest}'
+    except Exception as e:
+        return str(e)
