@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    command: apt-get install -y python3-pip python3-dev build-essential
+    ports:
+      - 5000:${PORT}
+    env_file: 
+      - .env
+    working_dir: /TeamInterview
+    volumes: 
+      - type: bind
+        source: ~/dev/teaminterview/TeamInterview
+        target: /TeamInterview
+    command: "chmod +x build.sh"
+    command: /bin/sh -c "./build.sh"

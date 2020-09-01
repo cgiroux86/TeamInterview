@@ -4,7 +4,7 @@
 
 1.  create a docker image by running:
 
-**docker build -t teaminterview-dev:latest .**
+**docker build -t ti:latest .**
 
 a) create container by running:**docker run --name ti-container --env-file=.env -p 5000:5000 teaminterview-dev**
 

@@ -4,13 +4,15 @@ from flask_sqlalchemy import SQLAlchemy
 from api.routes import user_router, auth_router
 from api.models.user_model import User, UserPasswords, db
 from api.models.video_model import Video
+from config.config import Config
 
 
 def create_app():
     application = Flask(__name__)
     application.register_blueprint(user_router.user_bp)
     application.register_blueprint(auth_router.auth_bp)
-    application.config.from_object(os.environ['APP_SETTINGS'])
+    application.config.from_object(Config)
+    # application.config.from_object(os.environ['APP_SETTINGS'])
     application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(application)
     return application
