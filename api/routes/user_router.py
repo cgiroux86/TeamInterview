@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from api.models.user_model import User, UserPasswords, db
 from flask_bcrypt import Bcrypt
 user_bp = Blueprint('user_bp', __name__)
@@ -27,12 +27,12 @@ def register():
         email = data['email']
         digest = data['password']
 
+        user = User(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+        )
         try:
-            user = User(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-            )
             db.session.add(user)
             db.session.commit()
         except Exception as e:
@@ -45,8 +45,9 @@ def register():
             )
             db.session.add(user_pw)
             db.session.commit()
-            return f'User with id of {user.id}, has successfully saved password {user_pw.digest}', 201
+
+            return jsonify(user.serialize()), 201
         except Exception as e:
             return str(e)
     else:
-        return {'error': 'missing fields'}, 400
+        return jsonify(error='missing required fields with a hot reload!'), 400

@@ -13,7 +13,8 @@ class User(db.Model):
     last_name = db.Column(db.String())
     email = db.Column(db.String(), unique=True, nullable=False)
     username = db.Column(db.String(), nullable=True)
-    password = db.relationship('UserPasswords', backref='user', lazy=True)
+    password = db.relationship(
+        'UserPasswords', backref=db.backref('users', lazy=True))
 
     def __init__(self, first_name, last_name, email, username=None):
         self.first_name = first_name
@@ -33,6 +34,14 @@ class User(db.Model):
             'username': self.username
         }
 
+    def verifyPassword(self, password):
+        user_pw = self.password[0].digest
+        print(user_pw, flush=True)
+        # return user_pw == received_pw
+        if Bcrypt().check_password_hash(user_pw, password):
+            return True
+        return False
+
 
 class UserPasswords(db.Model):
     __tablename__ = 'user_passwords'
@@ -48,6 +57,13 @@ class UserPasswords(db.Model):
 
     def __repr__(self):
         return f'user_id: {self.user_id}'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "hash": self.digest
+        }
 
 
 # class Video(db.Model):
