@@ -29,11 +29,15 @@ def auth():
     data = request.get_json(silent=True)
     user = User.query.filter_by(email=data['email']).first()
     if user.verifyPassword(data["password"]):
+
         token = jwt.encode({
             "user": data['email'],
             "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
         }, os.environ['SECRET_KEY'])
+
         return jsonify(token=token.decode()), 200
+    else:
+        return jsonify(message='invalid credentials'), 403
 
 
 @auth_bp.route('/auth/test_token', methods=["POST"])
