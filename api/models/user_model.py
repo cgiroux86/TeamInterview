@@ -1,11 +1,12 @@
 import sys
 import os
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_serializer import SerializerMixin
 from flask_bcrypt import Bcrypt
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -41,7 +42,7 @@ class User(db.Model):
         return Bcrypt().check_password_hash(user_pw, password)
 
 
-class UserPasswords(db.Model):
+class UserPasswords(db.Model, SerializerMixin):
     __tablename__ = 'user_passwords'
 
     id = db.Column(db.Integer, primary_key=True)

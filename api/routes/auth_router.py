@@ -5,26 +5,12 @@ from api.models.user_model import User, UserPasswords
 import sys
 import os
 from flask_jwt import jwt
+from api.decorators.decorators import check_for_token
 import datetime
 auth_bp = Blueprint('auth_bp', __name__)
 
-"""decorator function to validate JWT"""
 
-
-def check_for_token(func):
-    def wrapped():
-        token = request.headers.get('Authorization')
-        if not token:
-            return jsonify(error='unauthorized'), 401
-        try:
-            data = jwt.decode(token, os.environ['SECRET_KEY'])
-        except:
-            return jsonify(error='unauthorized'), 401
-        return func()
-    return wrapped
-
-
-@auth_bp.route('/auth/login', methods=["POST"])
+@auth_bp.route('/login', methods=["POST"])
 def auth():
     data = request.get_json(silent=True)
     user = User.query.filter_by(email=data['email']).first()
@@ -32,7 +18,8 @@ def auth():
 
         token = jwt.encode({
             "user": data['email'],
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=60)
+            "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=600),
+            "user_id": user.id
         }, os.environ['SECRET_KEY'])
 
         return jsonify(token=token.decode()), 200
@@ -40,7 +27,7 @@ def auth():
         return jsonify(message='invalid credentials'), 403
 
 
-@auth_bp.route('/auth/test_token', methods=["POST"])
+@auth_bp.route('/test_token', methods=["POST"])
 @check_for_token
 def authorized():
     return 'this means token is working!', 200
