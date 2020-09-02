@@ -4,15 +4,15 @@ from flask_bcrypt import Bcrypt
 from api.models.user_model import User, UserPasswords
 import sys
 import os
-from functools import wraps
 from flask_jwt import jwt
 import datetime
 # from flask_jwt import JWT, jwt_required, current_identity
 auth_bp = Blueprint('auth_bp', __name__)
 
+"""decorator function to validate JWT"""
+
 
 def check_for_token(func):
-    @wraps(func)
     def wrapped():
         token = request.headers.get('Authorization')
         if not token:
@@ -28,11 +28,7 @@ def check_for_token(func):
 @auth_bp.route('/auth/login', methods=["POST"])
 def auth():
     data = request.get_json(silent=True)
-    # user = User.query.join(UserPasswords, User.id == UserPasswords.user_id).filter(User.email == data['email']).add_columns(
-    #     User.id, User.email, UserPasswords.digest).first()
     user = User.query.filter_by(email=data['email']).first()
-    print(user.serialize(), flush=True)
-    # user.verifyPassword(data['password'])
     if user.verifyPassword(data["password"]):
         token = jwt.encode({
             "user": data['email'],
