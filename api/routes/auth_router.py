@@ -6,7 +6,6 @@ import sys
 import os
 from flask_jwt import jwt
 import datetime
-# from flask_jwt import JWT, jwt_required, current_identity
 auth_bp = Blueprint('auth_bp', __name__)
 
 """decorator function to validate JWT"""
