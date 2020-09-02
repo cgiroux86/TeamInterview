@@ -17,7 +17,7 @@ def create_team():
         new_team = Team(user.id, data['name'])
         db.session.add(new_team)
         db.session.commit()
-        return jsonify(new_team.serialize())
+        return jsonify(new_team.to_dict())
     else:
         try:
             teams = Team.query.filter_by(owner_id=user.id).all()
