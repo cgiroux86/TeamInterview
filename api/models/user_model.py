@@ -36,11 +36,9 @@ class User(db.Model):
 
     def verifyPassword(self, password):
         user_pw = self.password[0].digest
-        print(user_pw, flush=True)
+        print('testing', flush=True)
         # return user_pw == received_pw
-        if Bcrypt().check_password_hash(user_pw, password):
-            return True
-        return False
+        return Bcrypt().check_password_hash(user_pw, password)
 
 
 class UserPasswords(db.Model):
