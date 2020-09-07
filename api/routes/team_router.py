@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 from api.models.user_model import User, db
 from api.models.teams_model import Team
+from api.models.prompts_model import Prompt
 from flask_jwt import jwt
 from api.decorators.decorators import check_for_token
 from api.helpers.helpers import current_user
+from functools import wraps
 import os
 team_bp = Blueprint('team_bp', __name__)
 
@@ -25,3 +27,15 @@ def create_team():
 
         except Exception as e:
             return jsonify(error=str(e)), 400
+
+
+@team_bp.route('/<team_id>/prompts', methods=["GET"])
+@check_for_token
+def get_team_prompts(team_id):
+    team_id = team_id
+    try:
+
+        prompts = Prompt.query.filter_by(team_id=team_id).all()
+        return jsonify([prompt.to_dict() for prompt in prompts])
+    except Exception as e:
+        return jsonify(error=str(e)), 400
